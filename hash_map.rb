@@ -112,34 +112,35 @@ class HashMap
     self
   end
   
-end
+  private
 
-
-private
-
-def bucket_index key
-  index = hash(key) % @buckets.length
-  raise IndexError if index.negative? || index >= @buckets.length
-  index
-end
-
-def resize_if_needed
-  #   @size.to_f / @buckets.length   -  current load factor
-  return unless @size.to_f / @buckets.length >= @load_factor
-
-  new_buckets = Array.new(@buckets.length * 2)
-  @buckets.each do |bucket|
-    next unless bucket
-
-    bucket.each do |entry|
-      key, value = entry
-      new_index = hash(key) % new_buckets.length
-      new_buckets[new_index] ||= []
-      new_buckets[new_index] << [key, value]
-    end
+  def bucket_index key
+    index = hash(key) % @buckets.length
+    raise IndexError if index.negative? || index >= @buckets.length
+    index
   end
-  @buckets = new_buckets
+
+  def resize_if_needed
+    #   @size.to_f / @buckets.length   -  current load factor
+    return unless @size.to_f / @buckets.length >= @load_factor
+
+    new_buckets = Array.new(@buckets.length * 2)
+    @buckets.each do |bucket|
+      next unless bucket
+
+      bucket.each do |entry|
+        key, value = entry
+        new_index = hash(key) % new_buckets.length
+        new_buckets[new_index] ||= []
+        new_buckets[new_index] << [key, value]
+      end
+    end
+    @buckets = new_buckets
+  end
 end
+
+
+
 
 # Testing the HashMap
 
